@@ -17,7 +17,7 @@ También se ejecutó `Test_1604` a las 19:10: 9 comprobaciones, 0 fallos, incluy
 
 ## Instalación y activación por el usuario
 
-1. Copiar `Bot_señal_1.6.ex5` en una carpeta nueva bajo `MQL5/Experts` (por ejemplo `BCSO_1604_Demo`) y actualizar el Navegador de MT5.
+1. Copiar `XLK BOT.ex5` en una carpeta nueva bajo `MQL5/Experts` (por ejemplo `BCSO_1604_Demo`) y actualizar el Navegador de MT5.
 2. Sustituir el EA anterior en los gráficos M1 de Boom y Crash; no colocar ambos programas simultáneamente en el mismo símbolo.
 3. Revisar cuenta Demo USD y los inputs. Para activar, establecer `InpDemoExecution=true`, permitir trading algorítmico en las propiedades del EA y activar el botón correspondiente de MT5.
 4. Conservar `InpUseM5ReactionStrategy=true`, `InpRulePack=RULES_1600`, `InpShadowLegacyRules=false`, riesgo 1–1,5 USD y límite diario 10 USD. La opción RULES_1600 es el selector heredado; las reglas nuevas están identificadas como 1.604.

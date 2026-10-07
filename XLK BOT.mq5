@@ -1,6 +1,6 @@
 #property copyright "Personal demo research tool"
 #property version   "1.604"
-#property description "Bot señal: observa configuraciones Boom/Crash y registra señales en CSV."
+#property description "XLK BOT: observa configuraciones Boom/Crash y registra señales en CSV."
 #property description "Ejecución opcional solo Demo USD; InpDemoExecution=false por defecto."
 
 #define OBSERVER_RULE_VERSION "1.604"

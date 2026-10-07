@@ -3,7 +3,7 @@
 #define OnInit ObserverInit
 #define OnDeinit ObserverDeinit
 #define OnTick ObserverTick
-#include "../Bot_señal_1.6.mq5"
+#include "../XLK BOT.mq5"
 #undef OnInit
 #undef OnDeinit
 #undef OnTick

@@ -1,4 +1,4 @@
-# BCSO "Bot señal" 1.604 — Inventario y mapa del proyecto
+# BCSO "XLK BOT" 1.604 (antes "Bot señal 1.6") — Inventario y mapa del proyecto
 
 Fecha del análisis: 2026-10-07 · Alcance: carpeta `MQL5/Experts/BCSO_1604_RISK2_PAUSE/v1.6 f4/v1604` (repositorio git) y `Common/Files` (salidas CSV).
 Estado de este documento: **fase 1 (inventario y diagnóstico estructural)**. Se leyeron por completo el encabezado, `OnInit`, `OnTick`, `EvaluatePackSignals` y los puntos de ejecución de órdenes; el resto se mapeó por estructura (funciones, inputs, globales, llamadas). La lectura línea por línea de cada función es la fase 2.
@@ -17,7 +17,7 @@ Organización por capas (desde 2026-10-07). Cada carpeta de `src/` tiene un arch
 
 | Archivo | Líneas | Rol |
 |---|---|---|
-| `Bot_señal_1.6.mq5` | 2385 | EA principal: inputs base, zonas, señales, resultados pendientes, alertas, dibujo, `OnInit/OnTick`. Incluye las capas. |
+| `XLK BOT.mq5` (antes `Bot_señal_1.6.mq5`) | 2385 | EA principal: inputs base, zonas, señales, resultados pendientes, alertas, dibujo, `OnInit/OnTick`. Incluye las capas. |
 | `src/Config/InputsRisk.mqh` | 32 | **Todos** los `input` de ejecución y riesgo, en tres grupos: Ejecución, Riesgo — bloqueo, Riesgo — avisos. |
 | `src/Market/StructureRanges.mqh` | 172 | Swings/envolventes de estructura (solo contexto). |
 | `src/Market/StructuralLevels.mqh` | 311 | Niveles estructurales (swings/ciclos) como zonas extra. |
@@ -88,7 +88,7 @@ Ordenados por riesgo. Todo lo listado fue verificado en el código o en los `.se
 
 ### Pruebas
 
-12. **Las pruebas incluyen el EA entero con macros** (`#define input`, `#define OnInit ObserverInit`, `#define OrderSend MockOrderSend` y luego `#include "Bot_señal_1.6.mq5"`). Es ingenioso pero frágil: reemplaza `OrderSend` globalmente y desactiva todos los `input`. Las notas reportan 67 y 55 comprobaciones aprobadas, pero no hay pruebas de integración de llenados reales (las propias notas lo reconocen).
+12. **Las pruebas incluyen el EA entero con macros** (`#define input`, `#define OnInit ObserverInit`, `#define OrderSend MockOrderSend` y luego `#include "../XLK BOT.mq5"`). Es ingenioso pero frágil: reemplaza `OrderSend` globalmente y desactiva todos los `input`. Las notas reportan 67 y 55 comprobaciones aprobadas, pero no hay pruebas de integración de llenados reales (las propias notas lo reconocen).
 
 ### Repositorio
 
