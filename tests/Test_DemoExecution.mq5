@@ -14,7 +14,7 @@ long TestAccountInfoInteger(const ENUM_ACCOUNT_INFO_INTEGER property)
 #define OnInit ObserverInit
 #define OnDeinit ObserverDeinit
 #define OnTick ObserverTick
-#include "Bot_señal_1.6.mq5"
+#include "../Bot_señal_1.6.mq5"
 #undef OnInit
 #undef OnDeinit
 #undef OnTick

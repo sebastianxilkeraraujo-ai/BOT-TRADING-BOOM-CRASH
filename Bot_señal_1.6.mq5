@@ -8,7 +8,7 @@
 #define OBSERVER_REVISION "r3-demo-levels-ownpos-risk2"
 #define OBSERVER_BUILD_TAG "1.604-r3-demo-levels-manexec-ownpos-risk2-tp-retrace25"
 #define OBSERVER_SIGNAL_COLUMNS 85
-#include "StructureRanges.mqh"
+#include "src/Market/StructureRanges.mqh"
 
 // Attach to a Boom or Crash M1 chart in a DEMO MT5 terminal.
 // Full signals use closed candles. Experimental candidates use current quotes
@@ -231,9 +231,9 @@ bool g_structure_ready[2];
 int g_structure_spikes[2];
 datetime g_structure_asof[2];
 datetime g_structure_anchor[2];
-#include "Instrumentation.mqh"
-#include "TouchSpikeObserver.mqh"
-#include "OperationsMonitor.mqh"
+#include "src/Observability/Instrumentation.mqh"
+#include "src/Observability/TouchSpikeObserver.mqh"
+#include "src/Observability/OperationsMonitor.mqh"
 string SimpleModuleText(const string module,const string side);
 
 double BreakMargin()
@@ -1926,9 +1926,9 @@ bool WriteSignal(const string module,const string side,const Zone &zone,const Tr
    return true;
   }
 
-#include "Strategy1604.mqh"
-#include "StructuralLevels.mqh"
-#include "ManualExecution.mqh"
+#include "src/Strategy/Strategy1604.mqh"
+#include "src/Market/StructuralLevels.mqh"
+#include "src/Execution/ManualExecution.mqh"
 
 void EvaluatePackSignals()
   {
