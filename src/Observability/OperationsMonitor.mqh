@@ -5,16 +5,9 @@ input int InpTouchLoadRetrySeconds=180;
 input int InpTouchSyncGraceSeconds=120;
 input bool InpExportTrades=true;
 input int InpTradesBackfillDays=7;
-input bool InpEnableDisciplineMonitor=false;
-input int InpMaxOpenPositions=2;
-input int InpMaxTradesPerDay=8;
-input int InpMaxConsecutiveLosses=3;
-input int InpDisciplineCooldownMin=30;
 
 input bool InpExportTrades2=true;
 input int InpTrades2BackfillDays=14; // original exporter retains its existing 7-day default
-input double InpMaxRiskPerTradeUSD=2.00;
-input double InpMaxDailyLossUSD=0.0;
 input bool InpContextSnapshots=true;
 input bool InpRejectionFollowup=true;
 input int InpRejectionFollowMinutes=15;

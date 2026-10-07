@@ -13,24 +13,28 @@ Hipótesis de estrategia vigente (`InpUseM5ReactionStrategy=true`): gatillo M1, 
 
 Tamaño total del código: **~6 800 líneas, 296 funciones, ~165 `input`, ~210 variables globales**.
 
+Organización por capas (desde 2026-10-07). Cada carpeta de `src/` tiene un archivo de capa (`Config.mqh`, `Market.mqh`, …) que incluye sus módulos; el EA incluye `Config` al inicio y las demás capas en un único punto (tras sus globales). En MQL5 el orden de las **funciones** no importa; solo deben declararse antes de usarse los tipos, `input`, globales y `#define`.
+
 | Archivo | Líneas | Rol |
 |---|---|---|
-| `Bot_señal_1.6.mq5` | 2390 | EA principal: inputs base, zonas, señales, resultados pendientes, alertas, dibujo, `OnInit/OnTick`. Incluye a los demás. |
-| `StructureRanges.mqh` | 172 | Swings/envolventes de estructura (solo contexto). |
-| `Instrumentation.mqh` | 337 | Bloqueo de escritor único, nombres de CSV con etiqueta (`_R1604`), rechazos, spikes, caché de zonas. |
-| `TouchSpikeObserver.mqh` | 424 | Mide qué ocurre (spike) tras tocar una banda. |
-| `OperationsMonitor.mqh` | 854 | Exporta operaciones (trades/trades2), contexto, seguimiento de rechazos, **disciplina/riesgo** y autotests. |
-| `Strategy1604.mqh` | 250 | `EvaluateM5ReactionStrategy`: la estrategia M5/M1 y su plan (SL/TP/volumen). |
-| `StrategyVariants.mqh` | 516 | Variantes B/C/D y controles (solo observación), **guardas de ejecución**, entrada temprana de zona. |
-| `TakeProfitRules.mqh` | 198 | TP: zona más cercana o cuantil de spikes. |
-| `DemoExecution.mqh` | 372 | Envío real de órdenes (`DemoExecuteConfirmed`), pausa por pérdidas. |
-| `ManualExecution.mqh` | 580 | Entradas en niveles dibujados a mano, salida por retroceso 25 %, time-stop, resumen. |
-| `StructuralLevels.mqh` | 312 | Niveles estructurales (swings/ciclos) como zonas extra. |
-| `ManualLevels.mqh` | 90 | Lee líneas/rectángulos del gráfico como niveles. |
-| `LevelsTests.mqh`, `Test_1604.mq5`, `Test_DemoExecution.mq5` | 48/91/66 | Pruebas (scripts). |
-| `*.md` (3), `boom_risk2.set` y 3 `.set` de respaldo | — | Notas de entrega y presets. |
+| `Bot_señal_1.6.mq5` | 2385 | EA principal: inputs base, zonas, señales, resultados pendientes, alertas, dibujo, `OnInit/OnTick`. Incluye las capas. |
+| `src/Config/InputsRisk.mqh` | 32 | **Todos** los `input` de ejecución y riesgo, en tres grupos: Ejecución, Riesgo — bloqueo, Riesgo — avisos. |
+| `src/Market/StructureRanges.mqh` | 172 | Swings/envolventes de estructura (solo contexto). |
+| `src/Market/StructuralLevels.mqh` | 311 | Niveles estructurales (swings/ciclos) como zonas extra. |
+| `src/Market/ManualLevels.mqh` | 90 | Lee líneas/rectángulos del gráfico como niveles. |
+| `src/Strategy/Strategy1604.mqh` | 245 | `EvaluateM5ReactionStrategy`: la estrategia M5/M1 y su plan (SL/TP/volumen). |
+| `src/Strategy/StrategyVariants.mqh` | 508 | Variantes B/C/D y controles (solo observación), **guardas de ejecución**, entrada temprana de zona. |
+| `src/Strategy/TakeProfitRules.mqh` | 198 | TP: zona más cercana o cuantil de spikes. |
+| `src/Execution/DemoExecution.mqh` | 367 | Envío real de órdenes (`DemoExecuteConfirmed`), pausa por pérdidas. |
+| `src/Execution/ManualExecution.mqh` | 580 | Entradas en niveles dibujados a mano, salida por retroceso 25 %, time-stop, resumen. |
+| `src/Observability/Instrumentation.mqh` | 337 | Bloqueo de escritor único, nombres de CSV con etiqueta (`_R1604`), rechazos, spikes, caché de zonas. |
+| `src/Observability/TouchSpikeObserver.mqh` | 424 | Mide qué ocurre (spike) tras tocar una banda. |
+| `src/Observability/OperationsMonitor.mqh` | 847 | Exporta operaciones (trades/trades2), contexto, seguimiento de rechazos, **avisos de disciplina/riesgo** y autotests. |
+| `tests/` | 48/91/66 | `LevelsTests.mqh`, `Test_1604.mq5`, `Test_DemoExecution.mq5`. Hacen `#define input` (vacío); por eso los grupos usan la macro `BCSO_INPUT_GROUP`. |
+| `presets/` | — | `boom_risk2.set`, `crash_risk2.set` (UTF-16). |
+| `docs/` | — | Este documento y las notas de entrega. |
 
-Ruido en la carpeta (candidatos a `.gitignore`/borrado): **~35 `compile_*.log`**, `r3_*.log`, `levels_final_*.log`, **4 `.ex5` de respaldo** (`before_ownpos`, `before_risk2`, `R4_Levels_backup`, etc.), `.set` con sufijos `pre_*`/`before_*`. El historial de git debe sustituir a estos "guardados manuales".
+Los `.ex5`, los logs (`build/`) y los respaldos manuales ya no se versionan; los respaldos anteriores siguen en el tag `pre-restructure`.
 
 ## 3. Flujo de ejecución
 
@@ -43,12 +47,12 @@ Ruido en la carpeta (candidatos a `.gitignore`/borrado): **~35 `compile_*.log`**
 `OnTradeTransaction` reparte el evento a 4 manejadores (ejecución, pausa por pérdida, manual, retroceso) y a `OperationsRiskPoll`.
 
 **Rutas que terminan en una orden real** (todas pasan por `DemoExecuteConfirmed`, lo cual es bueno):
-- `Strategy1604.mqh:239` — estrategia M5/M1
-- `StrategyVariants.mqh:461` — entrada temprana de zona
-- `StructuralLevels.mqh:310` — niveles estructurales (`InpExecStructural`)
-- `ManualExecution.mqh:193` — niveles manuales (`InpExecManual`)
+- `src/Strategy/Strategy1604.mqh:234` — estrategia M5/M1
+- `src/Strategy/StrategyVariants.mqh:453` — entrada temprana de zona
+- `src/Market/StructuralLevels.mqh:309` — niveles estructurales (`InpExecStructural`)
+- `src/Execution/ManualExecution.mqh:193` — niveles manuales (`InpExecManual`)
 
-Además hay **dos `OrderSend` propios de cierre** en `ManualExecution.mqh` (salida por retroceso, línea ~366, y time-stop, ~429). Total de sitios `OrderSend`: 3.
+Además hay **dos `OrderSend` propios de cierre** en `src/Execution/ManualExecution.mqh` (salida por retroceso, línea ~366, y time-stop, ~429). Total de sitios `OrderSend`: 3.
 
 ## 4. Salidas (CSV en `Common/Files`)
 
@@ -61,19 +65,16 @@ Ordenados por riesgo. Todo lo listado fue verificado en el código o en los `.se
 ### Riesgo operativo (prioridad alta)
 
 1. **El preset activa la ejecución real; la documentación dice lo contrario.** `boom_risk2.set` tiene `InpDemoExecution=true`, `InpExecManual=true`, `InpExecStructural=true`; los `.md` y los `#property` afirman "false por defecto". Es correcto para los valores por defecto del código, pero los presets que realmente se cargan en el gráfico los invierten. Hay que decidir cuál es la verdad y documentarla.
-2. **Parámetros de riesgo duplicados con la misma función**, repartidos en 4 familias que se superponen:
-   - Pérdida diaria: `InpExecutionDailyLossUSD` (DemoExecution) y `InpExecMaxDailyLossUSD` (Variants) — el código toma el mínimo (`StrategyVariants.mqh:51`); además `InpMaxDailyLossUSD` (OperationsMonitor, en `0.0` en el preset).
-   - Magic: `InpExecutionMagic` e `InpExecMagic` (ambos 160402). Se resuelve con un truco: si `InpExecMagic != 160402` gana, si no, el otro (`StrategyVariants.mqh:52`). Cambiar uno a 160402 a propósito no tiene efecto.
-   - Pausa tras pérdidas: `InpLossPauseMinutes` (20) vs `InpExecPauseMinutes` (30).
-   - Rachas perdedoras: `InpMaxConsecutiveLosses` (3, OperationsMonitor) vs `InpExecMaxConsecutiveLosses` (4, Variants).
-   - Riesgo por operación: `InpPlanRiskMaxUSD` (estrategia) e `InpMaxRiskPerTradeUSD` (OperationsMonitor).
-   - El preset `boom_risk2.set` incluye `InpExecMaxRiskUSD`, que **ya no existe como input en el código**: los `.set` arrastran parámetros obsoletos que MT5 ignora en silencio.
-   Efecto: nadie puede decir de memoria cuál límite manda. Conviene un único bloque `RiskConfig`.
+2. ~~**Parámetros de riesgo duplicados.**~~ **Resuelto el 2026-10-07.** Al revisarlos, solo dos eran duplicados reales y se unificaron: la pérdida diaria (queda `InpExecMaxDailyLossUSD`; se eliminó `InpExecutionDailyLossUSD`) y el magic (queda `InpExecMagic`; se eliminó `InpExecutionMagic` y el truco del 160402). El resto son **pares aviso/bloqueo** o reglas distintas, y se mantienen:
+   - Pausas: `InpLossPauseMinutes` (20) tras 2 SL seguidos; `InpExecPauseMinutes` (30) al alcanzar `InpExecMaxConsecutiveLosses`.
+   - Rachas: `InpExecMaxConsecutiveLosses` (4) **bloquea**; `InpMaxConsecutiveLosses` (3) solo **avisa**.
+   - Riesgo por operación: `InpPlanRiskMaxUSD` **bloquea**; `InpMaxRiskPerTradeUSD` solo **avisa**. `InpMaxDailyLossUSD` es un aviso (0 = desactivado).
+   Todos están en `src/Config/InputsRisk.mqh`, agrupados en la ventana del EA. Se quitaron de los presets las claves obsoletas (`InpExecutionDailyLossUSD`, `InpExecutionMagic`, `InpExecMaxRiskUSD`). A los presets les faltan 15 inputs más nuevos (TP, salida por retroceso, `InpLossPauseMinutes`), que toman el valor por defecto del código.
 3. **Tres puntos de envío de órdenes y cuatro manejadores de `OnTradeTransaction`** con estado compartido en `GlobalVariable`s (55 usos). Funciona, pero es la zona donde un cambio pequeño tiene consecuencias de dinero.
 
 ### Estructura (el "espagueti")
 
-4. **Un monolito con includes que no son bibliotecas.** Los `.mqh` declaran sus propios `input` y globales, y el orden de `#include` es una dependencia dura: `Strategy1604.mqh` incluye a mitad de archivo a `StrategyVariants`, `TakeProfitRules` y `DemoExecution`; el EA incluye módulos tanto en la línea 234 como en la 1929. Hay declaraciones adelantadas para sortear el orden (`TpSelectedTarget`, `SimpleModuleText`). Mover un `#include` rompe la compilación.
+4. **Un monolito con includes que no son bibliotecas.** Los `.mqh` declaran sus propios `input` y globales. *Parcialmente resuelto el 2026-10-07:* ya no hay `#include` a mitad de archivo ni declaraciones adelantadas (sobraban: MQL5 no exige orden entre funciones); las capas se incluyen en un solo punto. Sigue pendiente que los módulos dependan de las globales declaradas en el `.mq5` principal antes de ese punto.
 5. **Estado global masivo**: ~69 globales `g_` en el EA principal + ~40 en `OperationsMonitor` + 28 en `Instrumentation` + 19 en `ManualExecution`, etc. Casi cualquier función lee o escribe el estado de otra.
 6. **Funciones largas**: 4 pasan de 100 líneas (`UpdatePendingOutcomes` 111, `CollectQualifiedZonesRaw` 108, `ObserveTouchSpikes` 107, `RecordObservation` 104) y unas 18 pasan de 60 (algunas son pruebas).
 7. **Struct `PendingSignal` con ~38 campos** que mezcla identidad, precios, estado de seguimiento, control, medición y resultado; `InitPendingSignal` los pone a mano uno por uno (fácil olvidar uno al añadir campos).

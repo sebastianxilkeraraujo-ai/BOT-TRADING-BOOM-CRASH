@@ -1,10 +1,5 @@
 // Optional execution of newly confirmed 1.604 signals. Off by default, DEMO only.
 // Never closes/modifies existing positions. SL/TP travel in the initial request.
-input bool   InpDemoExecution=false;
-input double InpExecutionDailyLossUSD=10.0;
-input int    InpLossPauseMinutes=20;
-input ulong  InpExecutionMagic=160402;
-input uint   InpExecutionDeviationPoints=10;
 
 string g_exec_account="";
 long g_exec_login=0;
@@ -141,7 +136,7 @@ bool ExecInitialize()
       (_Symbol!="Boom 1000 Index" && _Symbol!="Crash 1000 Index") ||
       !InpUseM5ReactionStrategy || InpShadowLegacyRules || InpRulePack!=RULES_1600 ||
        VariantsMagic()==0 || InpPlanRiskMinUSD<0.0 || InpPlanRiskMaxUSD>2.00 ||
-      InpExecutionDailyLossUSD<=0.0 || InpExecutionDailyLossUSD>10.0 ||
+      InpExecMaxDailyLossUSD<=0.0 || InpExecMaxDailyLossUSD>10.0 ||
       InpLossPauseMinutes<1 || InpLossPauseMinutes>1440)
       { Print("DEMO_EXEC: parámetros inválidos; requiere Demo USD, Boom/Crash 1000 M1, estrategia 1.604, riesgo 0-2.00 USD, pérdida diaria 10 USD por símbolo y pausa 1-1440 minutos"); return false; }
    return true;

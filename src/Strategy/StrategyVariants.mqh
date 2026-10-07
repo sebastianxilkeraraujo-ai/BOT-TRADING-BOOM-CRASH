@@ -2,15 +2,7 @@
 input bool InpEarlyZoneEntry=false;
 input double InpEarlyMaxAboveZoneWidths=0.5;
 input int InpEarlyZoneCooldownMinutes=10;
-input double InpExecMaxLots=0.20;
 input int InpConfirmedCooldownMinutes=10;
-input int InpExecMaxOrderErrors=3;
-input double InpExecMaxDailyLossUSD=10.0;
-input int InpExecMaxTradesPerDay=12;
-input int InpExecMaxConsecutiveLosses=4;
-input int InpExecPauseMinutes=30;
-input bool InpExecKillSwitch=false;
-input ulong InpExecMagic=160402;
 input bool InpEnableVariants=true;
 input double InpVariantStopWidths=2.0;
 input double InpVariantTargetWidths=4.0;
@@ -48,8 +40,8 @@ ExecGuardState VariantsGuardDefaults()
    s.max_errors=3; s.max_trades=12; s.max_losses=4; s.loss_limit=10.0; return s;
   }
 
-double VariantsDailyLimit() { return MathMin(InpExecutionDailyLossUSD,InpExecMaxDailyLossUSD); }
-ulong VariantsMagic() { return InpExecMagic!=160402 ? InpExecMagic : InpExecutionMagic; }
+double VariantsDailyLimit() { return InpExecMaxDailyLossUSD; }
+ulong VariantsMagic() { return InpExecMagic; }
 bool VariantsOwnMagic(const ulong observed,const ulong expected)
   { return expected!=0 && observed==expected; }
 bool VariantsStopsValid(const bool buy,const double bid,const double ask,const double sl,const double tp,const double minimum)

@@ -8,6 +8,7 @@
 #define OBSERVER_REVISION "r3-demo-levels-ownpos-risk2"
 #define OBSERVER_BUILD_TAG "1.604-r3-demo-levels-manexec-ownpos-risk2-tp-retrace25"
 #define OBSERVER_SIGNAL_COLUMNS 85
+#include "src/Config/Config.mqh"
 #include "src/Market/StructureRanges.mqh"
 
 // Attach to a Boom or Crash M1 chart in a DEMO MT5 terminal.
@@ -76,8 +77,6 @@ input double InpMaxSignalGapZoneWidths = 1.0;
 input int    InpRetestLookbackBars  = 8;
 input bool   InpEnableNModule       = true;
 input bool   InpUseM5ReactionStrategy = true; // M1 gatillo, M5 >=2 reacciones, M15 contexto
-input double InpPlanRiskMinUSD = 0.00;
-input double InpPlanRiskMaxUSD = 2.00;
 input int    InpNMinimumPullbackBars = 3;
 input double InpNImpulseZoneWidths = 3.0;
 input bool   InpEnableCrashDriftBuy = false; // Experimental, exposed to downward spikes
