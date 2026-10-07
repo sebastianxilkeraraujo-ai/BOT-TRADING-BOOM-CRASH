@@ -1,0 +1,5 @@
+# Binarios compilados (se regeneran con MetaEditor)
+*.ex5
+# Logs de compilación y salidas locales
+*.log
+build/
