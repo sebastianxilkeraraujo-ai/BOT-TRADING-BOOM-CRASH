@@ -231,10 +231,10 @@ bool g_structure_ready[2];
 int g_structure_spikes[2];
 datetime g_structure_asof[2];
 datetime g_structure_anchor[2];
-#include "src/Observability/Instrumentation.mqh"
-#include "src/Observability/TouchSpikeObserver.mqh"
-#include "src/Observability/OperationsMonitor.mqh"
-string SimpleModuleText(const string module,const string side);
+#include "src/Observability/Observability.mqh"
+#include "src/Market/Market.mqh"
+#include "src/Strategy/Strategy.mqh"
+#include "src/Execution/Execution.mqh"
 
 double BreakMargin()
   {
@@ -1925,10 +1925,6 @@ bool WriteSignal(const string module,const string side,const Zone &zone,const Tr
    if(ActivePack()) g_last_signal_bar=signal_bar;
    return true;
   }
-
-#include "src/Strategy/Strategy1604.mqh"
-#include "src/Market/StructuralLevels.mqh"
-#include "src/Execution/ManualExecution.mqh"
 
 void EvaluatePackSignals()
   {

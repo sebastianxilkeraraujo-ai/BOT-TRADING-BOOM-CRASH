@@ -142,7 +142,6 @@ int CollectStructuralLevels(const ZoneKind kind,AdditionalLevel &levels[])
    return ArraySize(levels);
   }
 
-#include "ManualLevels.mqh"
 
 bool LevelsInputsValid()
   {

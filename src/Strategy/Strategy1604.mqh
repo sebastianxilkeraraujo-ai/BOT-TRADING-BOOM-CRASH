@@ -145,11 +145,6 @@ bool StrategyAppendPlan(const string event_id,const datetime bar,const string st
    return saved;
   }
 
-double TpSelectedTarget(const string side,const double entry,const double width,const double spread,
-                        const double stop,const double current_target);
-#include "StrategyVariants.mqh"
-#include "TakeProfitRules.mqh"
-#include "../Execution/DemoExecution.mqh"
 
 void EvaluateM5ReactionStrategy()
   {
